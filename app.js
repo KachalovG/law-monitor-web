@@ -88,11 +88,13 @@ async function connect() {
   if (!candidate) throw new Error('Введите fine-grained токен GitHub.');
   const previous = token;
   const previousRepo = repo;
+  let authenticated = false;
   token = candidate;
   try {
     repo = repoName($('repo-input').value);
     await api(apiPath(''));
     await api(apiPath(`/actions/workflows/${WORKFLOW}`));
+    authenticated = true;
     connectionVersion++;
     stopPolling(); activeRunId = null;
     $('token-input').value = '';
@@ -100,13 +102,13 @@ async function connect() {
     $('connection-pill').classList.add('connected');
     setManualLink();
     hideNotice();
+    report = null; render(); showView('overview');
     await refreshReport();
     restoreRun();
     if (activeRunId) { setBusy(true); startPolling(); }
     showView('overview');
   } catch (error) {
-    token = previous;
-    repo = previousRepo;
+    if (!authenticated) { token = previous; repo = previousRepo; }
     throw error;
   }
 }
