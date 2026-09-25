@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://api.github.com; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <title>НормКонтроль — мониторинг законодательства</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="#overview" aria-label="НормКонтроль, главная">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span><strong>НОРМ</strong><small>КОНТРОЛЬ</small></span>
+      </a>
+      <div class="sidebar-label">РАБОЧАЯ ОБЛАСТЬ</div>
+      <nav class="nav" aria-label="Разделы">
+        <a class="nav-link active" href="#overview" data-view="overview"><span class="nav-icon">▦</span> Обзор</a>
+        <a class="nav-link" href="#documents" data-view="documents"><span class="nav-icon">▤</span> Документы</a>
+        <a class="nav-link" href="#sources" data-view="sources"><span class="nav-icon">◇</span> Источники</a>
+        <a class="nav-link" href="#settings" data-view="settings"><span class="nav-icon">⚙</span> Подключение</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="security-note"><span class="security-dot"></span><div><strong>Безопасный контур</strong><small>Ключи не публикуются на сайте</small></div></div>
+        <span class="edition">LAW MONITOR / WEB · V1.0</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumb">МОНИТОРИНГ <span>/</span> <b id="breadcrumb">ОБЗОР</b></div>
+        <div class="top-actions"><span class="live-pill" id="connection-pill"><i></i> Не подключено</span><button class="quiet-button" id="refresh-button" type="button" aria-label="Обновить данные">↻</button></div>
+      </header>
+
+      <section class="view" id="overview-view">
+        <div class="page-heading"><div><p class="eyebrow">ПРАВОВОЙ МОНИТОРИНГ / РФ</p><h1>Контроль изменений<br><em>без информационного шума.</em></h1><p class="heading-copy">Публикации, которые могут затронуть КПК, СКПК, ломбарды и жилищные накопительные кооперативы.</p></div><div class="heading-date"><span>СЕГОДНЯ · МСК</span><strong id="today-label">—</strong></div></div>
+        <div class="notice hidden" id="notice" role="status"></div>
+
+        <div class="overview-grid">
+          <section class="panel run-panel" aria-labelledby="run-title">
+            <div class="panel-top"><div><span class="section-index">01 / ЗАПРОС</span><h2 id="run-title">Новая проверка</h2></div><span class="panel-icon" aria-hidden="true">↗</span></div>
+            <p class="panel-description">Укажите дату публикации и запустите проверку. Сводка и резюме документов появятся на этой странице.</p>
+            <div class="mode-switch" role="group" aria-label="Период проверки">
+              <button class="mode active" data-mode="today" type="button">Сегодня</button><button class="mode" data-mode="day" type="button">Один день</button><button class="mode" data-mode="period" type="button">Период</button>
+            </div>
+            <div class="date-fields hidden" id="date-fields"><label>ДАТА ОТ<input type="date" id="from-date"></label><label id="to-wrap" class="hidden">ДАТА ДО<input type="date" id="to-date"></label></div>
+            <div class="run-footer"><div class="run-meta"><span class="mini-pulse"></span><span id="mode-hint">Публикации за текущий день по Москве</span></div><button class="primary-button" id="run-button" type="button">Запустить проверку <span>↗</span></button></div>
+            <div class="fallback-row"><label class="notify-label"><input type="checkbox" id="send-telegram"> Также отправить результат в Telegram</label></div>
+            <details class="usage-help"><summary>Как пользоваться</summary><p>Выберите «Сегодня», конкретную дату или период до 31 дня. Нажмите «Запустить проверку» и дождитесь результата здесь. Даты относятся к публикации документа. Откройте карточку, чтобы прочитать резюме и перейти к первоисточнику. Запуск по расписанию не требуется.</p></details>
+          </section>
+
+          <section class="panel status-panel" aria-labelledby="status-title"><div class="panel-top"><div><span class="section-index">02 / СОСТОЯНИЕ</span><h2 id="status-title">Последний запуск</h2></div><span class="status-indicator" id="status-indicator">ОЖИДАНИЕ</span></div><div class="status-center"><div class="status-symbol">◌</div><strong id="run-status">Пока нет данных</strong><p id="run-description">Подключите GitHub, чтобы получить результаты из приватного репозитория.</p></div><div class="status-bottom"><span id="last-run-date">ПОСЛЕДНЯЯ ПРОВЕРКА · —</span><a id="run-link" href="https://github.com/KachalovG/law-monitor-rf/actions/workflows/web-monitor.yml" target="_blank" rel="noopener noreferrer">Журнал GitHub ↗</a></div></section>
+        </div>
+
+        <div class="metric-grid"><div class="metric"><span>ПРОВЕРЕНО</span><strong id="metric-checked">—</strong><small>публикаций за период</small></div><div class="metric"><span>СОВПАДЕНИЯ</span><strong id="metric-matched">—</strong><small>по профильным словарям</small></div><div class="metric accent"><span>РЕЛЕВАНТНО</span><strong id="metric-relevant">—</strong><small>подтверждённых документов</small></div><div class="metric"><span>РУЧНАЯ ПРОВЕРКА</span><strong id="metric-review">—</strong><small>требуют внимания</small></div></div>
+        <section class="section-block"><div class="section-heading"><div><span class="section-index">03 / ПУБЛИКАЦИИ</span><h2>Последние документы</h2></div><button class="text-button" id="all-documents" type="button">Смотреть все <span>↗</span></button></div><div id="overview-documents" class="document-list"></div></section>
+      </section>
+
+      <section class="view hidden" id="documents-view"><div class="section-heading large"><div><p class="eyebrow">РЕЗУЛЬТАТЫ ПРОВЕРКИ</p><h1>Документы</h1><p class="subtle">Отдельные карточки с первоисточником и резюме GigaChat.</p></div><span id="documents-count" class="count-chip">0 ДОКУМЕНТОВ</span></div><div class="filter-row" role="group" aria-label="Категория"><button class="filter active" data-filter="ALL" type="button">Все</button><button class="filter" data-filter="KPK" type="button">КПК</button><button class="filter" data-filter="SKPK" type="button">СКПК</button><button class="filter" data-filter="LOMBARD" type="button">Ломбарды</button><button class="filter" data-filter="ZHKK" type="button">ЖНК</button></div><div id="all-document-list" class="document-list expanded"></div></section>
+
+      <section class="view hidden" id="sources-view"><div class="section-heading large"><div><p class="eyebrow">ПРОЗРАЧНОСТЬ ПРОВЕРКИ</p><h1>Источники</h1><p class="subtle">Если источник недоступен, результат помечается как неполный.</p></div></div><div id="source-cards" class="source-grid"></div><div class="footnote-panel"><strong>Как считается период</strong><p>Дата акта и дата публикации — разные вещи. Мы фильтруем документы по дате публикации. При сбое части источников отсутствие совпадений не означает отсутствие новых законов.</p></div></section>
+
+      <section class="view hidden" id="settings-view"><div class="section-heading large"><div><p class="eyebrow">БЕЗОПАСНОСТЬ И ДОСТУП</p><h1>Подключение</h1><p class="subtle">Интерфейс не хранит учётные данные между посещениями.</p></div></div><div class="settings-grid"><div class="panel setting-panel"><span class="section-index">GITHUB API</span><h2>Подключить репозиторий</h2><p>Для запуска из сайта нужен fine-grained токен GitHub только для этого репозитория: Actions — read/write, Contents — read. Токен хранится лишь в памяти открытой вкладки и отправляется только на api.github.com.</p><label>REPOSITORY<input id="repo-input" type="text" value="KachalovG/law-monitor-rf" autocomplete="off" spellcheck="false"></label><label>FINE-GRAINED TOKEN<input id="token-input" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false"></label><div class="settings-actions"><button id="connect-button" class="primary-button" type="button">Подключить <span>↗</span></button><button id="disconnect-button" class="quiet-text" type="button">Отключить</button></div><p class="fine-print">Токен не сохраняется в localStorage, cookies или URL. После подключения запускайте проверки кнопкой на сайте.</p></div><div class="panel setting-panel muted-panel"><span class="section-index">АРХИТЕКТУРА</span><h2>Без постоянного сервера</h2><div class="architecture-step"><b>01</b><span>Эта страница показывает интерфейс на GitHub Pages.</span></div><div class="architecture-step"><b>02</b><span>По запросу GitHub Actions запускает JS-проверку.</span></div><div class="architecture-step"><b>03</b><span>Ключи GigaChat и Telegram остаются в GitHub Secrets.</span></div><div class="architecture-step"><b>04</b><span>Результат читается из приватного репозитория через GitHub API.</span></div></div></div></section>
+    </main>
+  </div>
+  <dialog id="document-dialog" class="document-dialog"><div class="dialog-head"><span class="section-index">ДОКУМЕНТ / ПОДРОБНО</span><button id="close-dialog" class="quiet-button" type="button" aria-label="Закрыть">×</button></div><div id="dialog-body"></div></dialog>
+</body>
+</html>
